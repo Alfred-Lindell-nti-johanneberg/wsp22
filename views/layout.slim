@@ -6,12 +6,14 @@ html lang="en"
     link rel="stylesheet" href="/css/style.css"/
     title Birdwatcher forum 
   body   
-    header 
+    header
+        h1 Birdwatcher Forum
+    nav
         a href="/" Home  
-        a href="" Pictures 
+        a href="/pictures" Pictures 
         a href="" Birdwatching spots
         a href="" Bogos binted
         a href="" Login
         a href="" register
     main 
-        =yield 
+        == yield 
