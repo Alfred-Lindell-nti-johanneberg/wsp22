@@ -26,15 +26,9 @@ post('/postmade') do
     @id = 1 #add session för inloggad user id
     title = params[:title]
     body=params[:body]
-    if params[:picture] == "on"
-        topic = 1
-    elsif params[:spots] == "on"
-        topic = 2
-    elsif params[:bogos] == "on"
-        topic = 3
-    else 
-        topic = 0
-    end
+    p params[:topic]
+    topic = params[:topic].to_i
+
     db = SQLite3::Database.new("db/Birdwatch_forum.db")
     db.execute("INSERT INTO posts (title, body, user_id, topic_id) VALUES (?, ?, ?, ?)",title,body,@id,topic)
     redirect("/addpost")    
