@@ -5,6 +5,8 @@ require 'bcrypt'
 
 enable :sessions
 
+session[:id]=1
+
 get('/') do
     slim(:firstpage)
 end
@@ -23,7 +25,7 @@ get('/addpost') do
 end
 
 post('/postmade') do
-    @id = 1 #add session för inloggad user id
+    @id = session[:id] #add session för inloggad user id
     title = params[:title]
     body=params[:body]
     p params[:topic]
@@ -45,4 +47,10 @@ post('/postdeleted') do
     db.execute("DELETE FROM posts WHERE title = ?",title)
 
     redirect("/deletePost")
+end
+
+get('/Login') do
+    id=session[:id]
+    slim(:'users/new', locals:{key:(id)})
+
 end
