@@ -5,9 +5,9 @@ require 'bcrypt'
 
 enable :sessions
 
-session[:id]=1
 
 get('/') do
+    session[:id]=1
     slim(:firstpage)
 end
 
@@ -49,8 +49,25 @@ post('/postdeleted') do
     redirect("/deletePost")
 end
 
-get('/Login') do
+get('/register') do
     id=session[:id]
     slim(:'users/new', locals:{key:(id)})
 
+end
+
+post('/users/new') do
+    username = params[:username]
+    email = params[:email]
+    password = params[:password]
+    password_confirm = params[:password_confirm]
+  
+    if (password == password_confirm)
+      password_digest = BCrypt::Password.create(password)
+      db = SQLite3::Database.new('db/todo_login_sida.db')
+      db.execute("INSERT INTO users (username,pwdigest,email) VALUES (?,?)",username,password_digest,email)
+      redirect('/')
+    else
+      #felhantering
+      "Lösenorden matchade inte"
+    end
 end
