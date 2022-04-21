@@ -21,7 +21,7 @@ get('/pictures') do
 end
 
 get('/addpost') do
-    slim(:addPost)
+    slim(:'posts/addPost')
 end
 
 post('/postmade') do
@@ -37,7 +37,7 @@ post('/postmade') do
 end
 
 get('/deletePost') do
-    slim(:deletePost)
+    slim(:'(posts/deletePost')
 
 end
 
