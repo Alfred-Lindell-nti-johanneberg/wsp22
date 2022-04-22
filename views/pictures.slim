@@ -2,7 +2,7 @@ section
     - posts.each do |el|
         h1  = el["id"].to_s + el["title"]
         article = el["body"]
-
-
-
- 
+        -post_user=el["user_id"]
+        -users.each do |user|
+            -if user["id"] == post_user
+                p = "Posted by user #{user["name"]}"

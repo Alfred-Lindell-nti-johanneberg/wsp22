@@ -11,11 +11,14 @@ html lang="en"
     nav
         a href="/" Home  
         a href="/pictures" Pictures 
-        a href="" Birdwatching spots
-        a href="" Bogos binted
-        a href="/Login" Login
-        a href="/register" register
-        a href="/addpost" add post
-        a href="/deletePost" Delete post
+        a href="/spots" Birdwatching spots
+        a href="/bogos" Bogos binted
+        - if session[:id] == nil
+          a href="/login" Login
+          a href="/register" register
+        - if session[:id] != nil
+          a href="/addpost" add post
+          a href="/deletePost" Delete post
+          a href="/logout" logout
     main 
         == yield 
