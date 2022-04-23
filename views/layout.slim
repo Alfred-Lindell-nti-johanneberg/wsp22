@@ -15,10 +15,10 @@ html lang="en"
         a href="/spots" Birdwatching spots
         a href="/bogos" Bogos binted
         - if session[:id] == nil
-          a href="/login" Login
-          a href="/register" register
+          a href="/user/login" Login
+          a href="/users/new" register
         - if session[:id] != nil
-          a href="/addpost" add post
+          a href="/posts/new" add post
           a href="/users/#{session[:id]}" #{session[:username]}'s page 
             
           a href="/logout" logout

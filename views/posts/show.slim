@@ -1,0 +1,10 @@
+h1 = post["title"]
+article 
+    p = post["body"]
+
+p = "Posted by user: #{user["name"]}"
+-if session[:id]!=nil
+    -if user["id"] == session[:id] 
+        form action="/post/#{post["id"]}/delete" method="post"
+            input type="submit" value="remove post" 
+    

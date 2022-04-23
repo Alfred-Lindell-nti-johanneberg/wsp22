@@ -13,7 +13,8 @@ end
 
 
 get('/') do
-    slim(:index)
+    p session[:id]
+      slim(:index)
 end
 
 get('/quick_admin_login') do
@@ -28,9 +29,13 @@ get('/pictures') do
     db.results_as_hash = true
     posts = db.execute("SELECT * FROM posts WHERE topic_id = ?",topic_id)
     users = db.execute("SELECT * FROM users")
-    puts posts
-    puts users
-    slim(:'posts/index_pictures', locals:{posts:posts,users:users})
+    if session[:id] == nil
+        current_user = nil
+    else
+        current_user= db.execute("SELECT role_id FROM users WHERE id = ?",session[:id]).first
+    end
+
+    slim(:'posts/index_pictures', locals:{posts:posts,users:users, current_user:current_user})
 
 end
 get('/spots') do
@@ -54,49 +59,51 @@ get('/posts/new') do
     slim(:'posts/new')
 end
 
-post('/post/create') do
+get('/posts/:id') do
+    id = params[:id]
+    db = connect_to_db()
+    db.results_as_hash = true
+    post = db.execute("SELECT * FROM posts WHERE id = ?",id).first
+    user = db.execute("SELECT * FROM posts INNER JOIN users ON users.id = posts.user_id WHERE posts.id = ? ",id).first
+    slim(:'posts/show', locals:{post:post,user:user})
+end
+
+post('/posts/create') do
     id = session[:id] 
     title = params[:title]
     body=params[:body]
     p params[:topic]
     topic = params[:topic].to_i
-
     db = connect_to_db()
     db.execute("INSERT INTO posts (title, body, user_id, topic_id) VALUES (?, ?, ?, ?)",title,body,id,topic)
     redirect("/posts/new")    
 end
 
-get('/users/:id') do
-    id = session[:id]
-    db=connect_to_db()
-    db.results_as_hash = true
-    posts = db.execute("SELECT * FROM posts WHERE user_id = ?",id)
-    slim(:'users/show', locals:{posts:posts})
-end
-
-post('/postdeleted') do
+post('/post/:id/delete') do
+    id = params[:id]
     db = connect_to_db()
-    post_id = params[:id]
-    post_user_id = db.execute("SELECT user_id FROM posts where id = ?",post_id)
-    session[:delpostattempt]=0
+    post_user_id = db.execute("SELECT user_id FROM posts where id = ?",id)
+
     if post_user_id != []
-        if session[:id]==post_user_id[0][0]       
-            db.execute("DELETE FROM posts WHERE id = ?",post_id)
-            session[:delpostattempt]=nil
+        user_role=db.execute("SELECT role_id FROM users where id=?",session[:id]).first
+        if session[:id]==post_user_id[0][0] || user_role[0] == 1
+            db.execute("DELETE FROM posts WHERE id = ?",id)
+     
         else
-            session[:delpostattempt]+=1
+    
         end
     else
-        session[:delpostattempt]+=1
+      
     end
-    redirect("/users/:id")
+    redirect("/users/#{session[:id]}")
 end
 
-get('/register') do   
+
+get('/users/new') do  
     slim(:'users/new')
 end
 
-post('/users/new') do
+post('/users') do
     username = params[:username]
     email = params[:email]
     password = params[:password]
@@ -107,7 +114,7 @@ post('/users/new') do
     if (password == password_confirm)
       password_digest = BCrypt::Password.create(password)
       db = connect_to_db()
-      db.execute("INSERT INTO users (name,role_id,pwdigest,email) VALUES (?,?,?,?)",username,nil,password_digest,email)
+      db.execute("INSERT INTO users (name,role_id,pwdigest,email) VALUES (?,?,?,?)",username,0,password_digest,email)
       session[:regattempt]=nil
       redirect('/')
     else
@@ -121,11 +128,19 @@ get('/logout') do
     redirect('/')
 end
 
-get('/login') do
+get('/user/login') do
     slim(:'users/login')
 end
 
-post('/user/login') do
+get('/users/:id') do
+    id = session[:id]
+    db=connect_to_db()
+    db.results_as_hash = true
+    posts = db.execute("SELECT * FROM posts WHERE user_id = ?",id)
+    slim(:'users/show', locals:{posts:posts})
+end
+
+post('/login') do
     username = params[:username]
   password = params[:password]
   db = connect_to_db()
