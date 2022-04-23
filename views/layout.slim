@@ -8,6 +8,7 @@ html lang="en"
   body   
     header
         h1 Birdwatcher Forum
+        a href="/quick_admin_login" quick admin login
     nav
         a href="/" Home  
         a href="/pictures" Pictures 
@@ -18,7 +19,8 @@ html lang="en"
           a href="/register" register
         - if session[:id] != nil
           a href="/addpost" add post
-          a href="/deletePost" Delete post
+          a href="/users/#{session[:id]}" #{session[:username]}'s page 
+            
           a href="/logout" logout
     main 
         == yield 

@@ -4,3 +4,9 @@ form action="users/new" method="POST"
     input type="password" name="password" placeholder="enter password"
     input type="password" name="password_confirm" placeholder="enter password again"
     input type="submit" value="registrera ny användare"
+
+
+-if session[:regattempt] != nil 
+    -if session[:regattempt] > 0
+        h2 Passwords don't match
+        p please try again

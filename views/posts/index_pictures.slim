@@ -1,6 +1,6 @@
 section 
     - posts.each do |el|
-        h1  = el["id"].to_s + el["title"]
+        h1  =  el["title"]
         article = el["body"]
         -post_user=el["user_id"]
         -users.each do |user|

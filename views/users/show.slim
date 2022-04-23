@@ -1,0 +1,19 @@
+h1 Welcome to your page #{session[:username]}
+section 
+    h2 manage posts 
+    article 
+        p To remove post, type id of said post and submit.
+        form action="/postdeleted" method="post"
+            input type="text" name="id" placeholder="Type id of post here" 
+            input type="submit"  value="Remove post"
+        -if session[:delpostattempt] != nil 
+            -if session[:delpostattempt] > 0
+                b That post does not belong to you or doesn't exist.
+    h2 Your posts
+
+    - posts.each do |el|
+            h2  = el["title"]
+            
+            article 
+                p #{el["body"]}
+            h3 id of post is #{el["id"]}
