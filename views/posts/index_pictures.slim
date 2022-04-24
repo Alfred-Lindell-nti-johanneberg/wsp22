@@ -1,8 +1,11 @@
 section 
     - posts.each do |el|
         h1 #{el["title"]}
+        / -tags.each do |tag|
+
         article 
-            img src="#{el["img_path"]}" 
+            -if el["img_path"] != nil
+                img src="/#{el["img_path"]}" 
             p = el["body"]
         div
             -post_user=el["user_id"]

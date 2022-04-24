@@ -1,5 +1,11 @@
 h1 = post["title"]
-article 
+section class="tags"
+    p tags:
+    -tags.each do |tag|
+        p = tag["name"]
+article
+    -if post["img_path"] != nil
+        img src="/#{post["img_path"]}" 
     p = post["body"]
 
 p = "Posted by user: #{user["name"]}"
@@ -7,4 +13,15 @@ p = "Posted by user: #{user["name"]}"
     -if user["id"] == session[:id] 
         form action="/post/#{post["id"]}/delete" method="post"
             input type="submit" value="remove post" 
+        
+        p Write a tag in the box below and submit to add a tag to your post.
+        p Or write a tag you want to remove from your post.
+        form action="/post/#{post["id"]}/tags" method="post" 
+            input type="text" name="tag" placeholder="tag"    
+            input type="submit" value="add/remove tag"
     
+        p To edit your post, simply change the text in the boxes below
+        form action="/post/#{post["id"]}/update" method="post"
+            input type="text" name="title" value="#{post["title"]}"
+            input type="text" name="body" value="#{post["body"]}"
+            input type="submit" value="Update"/

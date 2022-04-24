@@ -1,0 +1,30 @@
+section.tags{
+    display: flex;
+    flex-direction:row;
+}
+section.tags p{
+    border: 1px solid;
+    box-shadow: 1px 1px 1px 0.5px black ;
+    margin: 2px;
+}
+ body{
+    margin: 0;
+    
+    padding-left: none; 
+}
+*{
+    padding-left: 0.2vw;
+}
+
+nav{
+    font-size: larger;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color:tomato;
+
+    height: 10vh;
+}
+nav a{
+    color:black;
+}

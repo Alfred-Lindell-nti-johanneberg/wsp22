@@ -1,4 +1,15 @@
 h1 Welcome to your page #{session[:username]}
+p your email:#{session[:email]}
+form action="/users/#{session[:id]}/update/email" method="post" 
+    input type="text" name="email" value="#{session[:email]}" placeholder="email"
+    input type="submit" value="update email"
+p Change Password?
+form action="/users/#{session[:id]}/update/password" method="post"
+    input type="password" name="password_old" placeholder="enter old password"
+    input type="password" name="password" placeholder="enter new password"
+    input type="password" name="password_confirm" placeholder="enter new password again"
+    input type="submit" value="Change password"
+p = session[:change_pw_err]
 section 
     h2 manage posts 
 
@@ -10,3 +21,4 @@ section
             a  href="/posts/#{el["id"]}" view post 
         form action="/post/#{el["id"]}/delete" method="post"
             input type="submit" value="remove post" 
+            

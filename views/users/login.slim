@@ -9,3 +9,4 @@ form action="/login" method="post"
     -if session[:loginattempt] > 0
         h2 User not found
         p Please check if the spelling of username and password are correct
+        p=session[:signinerror]
