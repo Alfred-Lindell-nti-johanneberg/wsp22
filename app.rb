@@ -72,10 +72,19 @@ post('/posts/create') do
     id = session[:id] 
     title = params[:title]
     body=params[:body]
-    p params[:topic]
     topic = params[:topic].to_i
+    if params[:file] && params[:file][:filename]
+        path = File.join("./public/img/",params[:file][:filename])
+        path_for_db = File.join("img/",params[:file][:filename])
+        file=params[:file][:tempfile]
+        File.open(path, 'wb') do |f|
+            f.write(file.read)
+        end
+    else
+        path_for_db = nil
+    end
     db = connect_to_db()
-    db.execute("INSERT INTO posts (title, body, user_id, topic_id) VALUES (?, ?, ?, ?)",title,body,id,topic)
+    db.execute("INSERT INTO posts (title, body, user_id, topic_id,img_path) VALUES (?, ?, ?, ?,?)",title,body,id,topic,path_for_db)
     redirect("/posts/new")    
 end
 
@@ -83,12 +92,13 @@ post('/post/:id/delete') do
     id = params[:id]
     db = connect_to_db()
     post_user_id = db.execute("SELECT user_id FROM posts where id = ?",id)
-
+    path = db.execute("SELECT img_path FROM posts where id = ?", id).first
+    p path
     if post_user_id != []
         user_role=db.execute("SELECT role_id FROM users where id=?",session[:id]).first
         if session[:id]==post_user_id[0][0] || user_role[0] == 1
             db.execute("DELETE FROM posts WHERE id = ?",id)
-     
+            File.delete("./public/#{path[0]}") if File.exist?("./public/#{path[0]}")
         else
     
         end

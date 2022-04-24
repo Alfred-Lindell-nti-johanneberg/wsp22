@@ -1,7 +1,9 @@
 section 
     - posts.each do |el|
         h1 #{el["title"]}
-        article = el["body"]
+        article 
+            img src="#{el["img_path"]}" 
+            p = el["body"]
         div
             -post_user=el["user_id"]
             -users.each do |user|
@@ -10,7 +12,8 @@ section
                     p = "Posted by user #{user["name"]}"
 
             a  href="/posts/#{el["id"]}" view post
+
             -if current_user != nil 
-                -if current_user["user_id"]==1
+                -if current_user["role_id"]==1
                     form action="/post/#{el["id"]}/delete" method="post"
                         input type="submit" value="remove post" 

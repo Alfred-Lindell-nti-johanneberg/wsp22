@@ -1,5 +1,5 @@
 -if session[:id]!=nil
-    form action="/posts/create" method="post" 
+    form action="/posts/create" method="post" enctype="multipart/form-data"
         input type="radio" id="picture" name="topic" value="1"
         label for="picture" Picture
         input type="radio" id="spots" name="topic"  value="2"
@@ -8,6 +8,7 @@
         label for="bogos" Bogos binted 👽
         input type="text" name="title" placeholder="Title"
         input type="text" name="body" placeholder="text"
+        input type="file" name="file"
         input type="submit" value="Post"
 -else
     h2 Logga in innan du kan göra posts
