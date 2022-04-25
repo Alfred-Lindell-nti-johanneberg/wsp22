@@ -15,12 +15,6 @@ get('/') do
   slim(:index)
 end
 
-get('/quick_admin_login') do
-    session[:id]= 1
-    session[:username] = "Admin"
-    redirect('/')
-end
-
 get('/pictures') do
     keys=show_posts_topic(1)
     slim(:'posts/index_pictures', locals:{posts:keys[0],users:keys[1], current_user:keys[2]})

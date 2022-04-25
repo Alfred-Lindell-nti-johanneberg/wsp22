@@ -78,7 +78,9 @@ def delete_post(id)
         if session[:id]==post_user_id[0][0] || user_role[0] == 1
             db.execute("DELETE FROM posts WHERE id = ?",id)
             db.execute("DELETE FROM posts_tags_rel WHERE posts_id = ?",id)
-            File.delete("./public/#{path[0]}") if File.exist?("./public/#{path[0]}")
+            if path[0]!=nil
+                File.delete("./public/#{path[0]}") if File.exist?("./public/#{path[0]}")
+            end
         end      
     end
     return redirect("/users/#{session[:id]}")
