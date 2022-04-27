@@ -16,17 +16,17 @@ get('/') do
 end
 
 get('/pictures') do
-    keys=show_posts_topic(1)
+    keys=show_posts_topic(1,session[:id])
     slim(:'posts/index_pictures', locals:{posts:keys[0],users:keys[1], current_user:keys[2]})
 
 end
 get('/spots') do
-    keys=show_posts_topic(2)
+    keys=show_posts_topic(2,session[:id])
     slim(:'posts/index_spots', locals:{posts:keys[0],users:keys[1], current_user:keys[2]})
 
 end
 get('/bogos') do
-    keys=show_posts_topic(3)
+    keys=show_posts_topic(3,session[:id])
     slim(:'posts/index_bogos', locals:{posts:keys[0],users:keys[1], current_user:keys[2]})
 end
 
@@ -80,7 +80,14 @@ post('/users') do
     email = params[:email]
     password = params[:password]
     password_confirm = params[:password_confirm]
-    new_user(username,email,password,password_confirm)
+    session[:regattempt]=0
+    session[:regattempt] = new_user(username,email,password,password_confirm)
+    if session[:regattempt]== nil
+        redirect('/')
+    else
+        redirect('/register')
+    end
+    
 end
 
 get('/logout') do

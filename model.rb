@@ -1,13 +1,27 @@
+#
+# connects to and database saves database to a variable 'db' 
+#
+# @return [array<Hash>] returns db
+#
 def connect_to_db()
     db = SQLite3::Database.new("db/Birdwatch_forum.db")
 end
 
-def show_posts_topic(topic_id)
+
+#
+# <Description>
+#
+# @param [<Type>] topic_id <description>
+# @param [<Type>] user_id <description>
+#
+# @return [<Type>] <description>
+#
+def show_posts_topic(topic_id,user_id)
     db = connect_to_db()
     db.results_as_hash = true
     posts = db.execute("SELECT * FROM posts WHERE topic_id = ?",topic_id)
     users = db.execute("SELECT * FROM users")
-    if session[:id] == nil
+    if user_id == nil
         current_user = nil
     else
         current_user= db.execute("SELECT role_id FROM users WHERE id = ?",session[:id]).first
@@ -15,6 +29,13 @@ def show_posts_topic(topic_id)
     return [posts,users,current_user]
 end
 
+#
+# <Description>
+#
+# @param [<Type>] id <description>
+#
+# @return [<Type>] <description>
+#
 def show_post(id)
     db = connect_to_db()
     db.results_as_hash = true
@@ -28,9 +49,9 @@ def create_post(id,title,body,topic,file)
     if file && file[:filename]
         path = File.join("./public/img/",file[:filename])
         path_for_db = File.join("img/",file[:filename])
-        file=params[:file][:tempfile]
+        tempfile=file[:tempfile]
         File.open(path, 'wb') do |f|
-            f.write(file.read)
+            f.write(tempfile.read)
         end
     else
         path_for_db = nil
@@ -68,37 +89,37 @@ def add_remove_tags(post_id,post_tag)
     end
 end
 
-def delete_post(id)
+def delete_post(post_id,user_id)
     db = connect_to_db()
-    post_user_id = db.execute("SELECT user_id FROM posts where id = ?",id)
-    path = db.execute("SELECT img_path FROM posts where id = ?", id).first
+    post_user_id = db.execute("SELECT user_id FROM posts where id = ?",post_id)
+    path = db.execute("SELECT img_path FROM posts where id = ?", post_id).first
     p path
     if post_user_id != []
         user_role=db.execute("SELECT role_id FROM users where id=?",session[:id]).first
-        if session[:id]==post_user_id[0][0] || user_role[0] == 1
-            db.execute("DELETE FROM posts WHERE id = ?",id)
-            db.execute("DELETE FROM posts_tags_rel WHERE posts_id = ?",id)
+        if user_id==post_user_id[0][0] || user_role[0] == 1
+            db.execute("DELETE FROM posts WHERE id = ?",post_id)
+            db.execute("DELETE FROM posts_tags_rel WHERE posts_id = ?",post_id)
             if path[0]!=nil
                 File.delete("./public/#{path[0]}") if File.exist?("./public/#{path[0]}")
             end
         end      
     end
-    return redirect("/users/#{session[:id]}")
+    return redirect("/users/#{user_id}")
 end
 
 def new_user(username,email,password,password_confirm)
     
-    session[:regattempt]=0
+    regattempt=0
 
     if (password == password_confirm)
       password_digest = BCrypt::Password.create(password)
       db = connect_to_db()
       db.execute("INSERT INTO users (name,role_id,pwdigest,email) VALUES (?,?,?,?)",username,0,password_digest,email)
-      session[:regattempt]=nil
-      return redirect('/')
+      regattempt = nil
+      return regattempt
     else
-      session[:regattempt]+=1
-      return redirect('/register')
+      regattempt +=1
+      return regattempt
     end
 end
 
