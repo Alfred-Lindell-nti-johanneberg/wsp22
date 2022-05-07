@@ -10,5 +10,6 @@
         input type="text" name="body" placeholder="text"
         input type="file" name="file"
         input type="submit" value="Post"
+    p #{session[:create_post_error]}
 -else
     h2 Logga in innan du kan göra posts

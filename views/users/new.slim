@@ -10,3 +10,4 @@ form action="/users" method="POST"
     -if session[:regattempt] > 0
         h2 Passwords don't match
         p please try again
+        p #{session[:regattempt_error]}
