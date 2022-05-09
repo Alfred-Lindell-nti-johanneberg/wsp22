@@ -1,4 +1,6 @@
+#  Model help functions
 module Model
+
     #
     # connects to and database saves database to a variable 'db' 
     #
@@ -29,7 +31,6 @@ module Model
         end
         return [posts,users,current_user]
     end
-
 
     #
     # takes the id of a post and returns an array of variables taken from db
@@ -121,6 +122,14 @@ module Model
         return
     end
 
+    #
+    # Delets post where ID = post_id if user is logged in and owns the post or is admin. Also cascades any files attatched and relations with tags.
+    #
+    # @param [integer] post_id The ID of post
+    # @param [integer] user_id The ID of logged in user
+    #
+    # @return [nil] nothing
+    #
     def delete_post(post_id,user_id)
         db = connect_to_db()
         post_user_id = db.execute("SELECT user_id FROM posts where id = ?",post_id)
