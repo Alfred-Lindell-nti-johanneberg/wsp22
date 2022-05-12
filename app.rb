@@ -134,9 +134,9 @@ end
 # @see Model#is_admin?
 # @see Model#delete_post
 post('/post/:id/delete') do
-    id = params[:id]
+    post_id = params[:id]
     if session[:id] !=nil
-        if id == session[:id] || is_admin?(session[:id])
+        if user_id_by_post_id(post_id) == session[:id] || is_admin?(session[:id])
             delete_post(id)
         end
     end
@@ -183,6 +183,7 @@ post('/users') do
     end
 
     session[:regattempt] = new_user(username,email,password,password_confirm)
+    
     if session[:regattempt]== nil
         redirect('/')
     else

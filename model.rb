@@ -1,4 +1,4 @@
-#  Model help functions
+#  Model - help functions
 module Model
 
     #
